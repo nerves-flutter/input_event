@@ -3,7 +3,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:input_event/src/types.dart';
+
+import 'types.dart';
 
 class InputEventController {
   final String filePath;
@@ -32,7 +33,7 @@ class InputEventController {
         // Parse event data using structured data types
         final data = ByteData.view(Uint8List.fromList(eventBytes).buffer);
 
-        // Stucture of event data is:
+        // Structure of event data is:
         //   * 16 bytes for a timespan struct (ignored for now)
         //   * 2 bytes for type
         //   * 2 bytes for code
