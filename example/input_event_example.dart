@@ -10,8 +10,11 @@ void main() {
     while (true) {}
   });
 
-  // This will receive all events from the device file
-  final events = InputEventController(deviceFile);
+  // This will receive all events from the device file and print errors to console
+  final events = InputEventController(deviceFile, onError: (err) {
+    print("Error from input_event: $err");
+  });
+
   events.eventStream.stream.listen((data) {
     print(data);
   });

@@ -9,25 +9,37 @@ import 'types.dart';
 class InputEventController {
   final String filePath;
   final File deviceFile;
+  final Function(Object err) onError;
   final StreamController eventStream = StreamController.broadcast();
 
-  InputEventController(this.filePath) : deviceFile = File(filePath) {
-    _startListen();
+  InputEventController(this.filePath, {required this.onError})
+      : deviceFile = File(filePath) {
+    _init();
   }
 
-  void _startListen() async {
+  void _init() async {
+    try {
+      await _startListen();
+    } catch (err) {
+      onError(err);
+    }
+  }
+
+  _startListen() async {
     if (!deviceFile.existsSync()) {
       throw "Could not open device file $filePath. Input events will not be processed!";
     }
 
     final fileStream = deviceFile.openRead();
+    fileStream.handleError((streamError) {
+      throw streamError;
+    });
 
     await for (final rawByteList in fileStream) {
       final eventChunks = rawByteList.slices(24);
       for (final eventBytes in eventChunks) {
         if (eventBytes.length != 24) {
-          // Invalid event struct, ignore it
-          continue;
+          throw "Got a message from the event file $filePath that did not match expected length. Out of sync!";
         }
 
         // Parse event data using structured data types
