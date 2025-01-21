@@ -1,6 +1,6 @@
 name: input_event
 description: Dart library to process raw events from `/dev/input/event*` files in Linux.
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/smartrent/dart_input_event.git
 
 environment:
